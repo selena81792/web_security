@@ -133,6 +133,7 @@ The backdoor's salt: `4ef63abe-1abd-45a6-913d-6fb99657e24b`
 I had to reverse the decode function to figure out how to encode my cookie.
 
 This is the full dictionary I got, from trial and error everything:
+
 ![image](https://user-images.githubusercontent.com/43685348/221394860-046f8f97-40cc-4314-aee9-7cb984d1452a.png)
 
 After that I was able to write a working cookie.
