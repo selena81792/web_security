@@ -133,55 +133,7 @@ The backdoor's salt: `4ef63abe-1abd-45a6-913d-6fb99657e24b`
 I had to reverse the decode function to figure out how to encode my cookie.
 
 This is the full dictionary I got, from trial and error everything:
-```
-" = Iq..
-' = J2..
-( = KA..
-) = Ka..
-. = Lq..
-/ = L2..
-: = Oq..
-; = O2..
-_ = X2..
-{ = e2..
-} = fa..
-a = Ya..
-b = Yq..
-c = Y2..
-d = ZA..
-e = Za..
-f = Zq..
-g = Z2..
-h = aA..
-i = aa..
-j = aq..
-k = a2..
-l = bA..
-m = ba..
-n = bq..
-o = b2..
-p = cA..
-q = ca..
-r = cq..
-s = c2..
-t = dA..
-u = da..
-v = dq..
-w = d2..
-x = eA..
-y = ea..
-z = eq..
-0 = MA..
-1 = Ma..
-2 = Mq..
-3 = M2..
-4 = NA..
-5 = Na..
-6 = Nq..
-7 = N2..
-8 = OA..
-9 = Oa..
-```
+![image](https://user-images.githubusercontent.com/43685348/221394860-046f8f97-40cc-4314-aee9-7cb984d1452a.png)
 
 After that I was able to write a working cookie.
 
