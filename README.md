@@ -286,3 +286,14 @@ Now we find the hidden file via `ls`.
 # auth
 ## auth50
 whats this? just admin password.
+## auth100
+just look at source code and enter a correct password.
+## auth200
+just look at source code and enter a correct password and with some reverse bin2hex.
+
+# js
+## b64js
+just look at source code and enter a correct password and with some reverse btoa.
+
+## js200
+just look at source code and enter a correct password.
